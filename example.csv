@@ -1,0 +1,6 @@
+project_id,name,story_type,description
+6,Home page link is dead,bug,The link to the home page from the top menu does not work
+1,Password reset form,feature,Users should be able to reset their passwords using email
+6,Checkout as guest,feature,Offer customers the chance to checkout without registering
+2,Create your own profile,epic,Allow users to build their own profile. Include pictures and bio and a link to connected friends
+2,Telephone number is not saved,bug,When trying to enter a telephone number from the profile page nothing is saved
