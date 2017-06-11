@@ -1,2 +1,11 @@
-# clubhouse-csv-import
-Import Story cards to Clubhouse from a CSV File
+# Clubhouse.io CSV Import
+
+This is a simple PHP app that turns a CSV file into stories *(bug, chore, feature)* using the [Clubhouse v1 API](https://clubhouse.io/api/v1/).
+
+There is no framework or package manager, just a few lines of PHP and a pleasant UI built on the [Skeleton CSS framework](http://www.getskeleton.com)
+
+# Installation & Usage
+
+Clone this repository to a location available by your webserver and load index.php in the browser. 
+
+If you do not want to install the app, a hosted version is available: [Clubhouse CSV Importer](http://jamesmikkelson.com/clubhouse)
