@@ -35,14 +35,20 @@ if (!empty($_FILES['csv']['name']) && substr($_FILES['csv']['name'], -4) == '.cs
                 continue;
             }
 
-            $data = json_encode(
-                    array(
-                        "project_id" => $line['project_id'],
-                        "name" => $line['name'],
-                        "story_type" => $line['story_type'],
-                        "description" => iconv("UTF-8", "ISO-8859-1//TRANSLIT", $line['description'])
-                    )
+	    // Required columns
+            $payload = array("project_id" => $line['project_id'],
+                              "name" => $line['name'],
+                              "story_type" => $line['story_type']
             );
+            
+            // Optional columns
+            addIfNotEmpty('milestone_id', $line, $payload);
+            addIfNotEmpty('description', $line, $payload);
+            addIfNotEmpty('estimate', $line, $payload);
+            addIfNotEmptyAsArray('owner_ids', $line, ' ', $payload);
+
+            $data = json_encode($payload);
+
 
             //make Clubhouse POST request
             $result = postClubhouse($_POST['token'], $data);
@@ -59,6 +65,29 @@ if (!empty($_FILES['csv']['name']) && substr($_FILES['csv']['name'], -4) == '.cs
     } else {
         echo 'CSV upload failed: ' . $_FILES['csv']['error'];
     }
+}
+
+/**
+  *
+  * If $src['key'] value is not empty, add a $key with the value to $dest
+  *
+  */
+function addIfNotEmpty($key, $src, &$dest) {
+    if (isNotEmptyString($src[$key])) $dest[$key] = $src[$key];
+}
+
+/**
+  *
+  * If $src['key'] value is not empty, explode to array (w/ $delim as delimeter),
+  * and add a $key with the array as its value to $dest.
+  *
+  */
+function addIfNotEmptyAsArray($key, $src, $delim, &$dest) {
+    if (isNotEmptyString($src[$key])) $dest[$key] = explode($delim, $src[$key]);
+}
+
+function isNotEmptyString($str) {
+    return (isset($str) && (strlen(trim($str)) > 0));
 }
 
 function unpackCsv($csv) {

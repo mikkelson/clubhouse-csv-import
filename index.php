@@ -29,7 +29,7 @@
        <br />
        <input type="file" name="csv" size="25" />
        <input type='submit' class='button-primary' value='Import CSV' />
-     </form>
+    </form>
     </div>
 
     <?php /*Results Start*/ if(!empty($csv_lines)){?>
@@ -80,7 +80,9 @@
                 <ul>
                     <li>milestone_id</li>
                     <li>description</li>
-                    <li>See complete <a href="https://clubhouse.io/api/v1/#create-story" target="_blank">list of available fields</a>.</li>
+                    <li>estimate</li>
+                    <li>owner_ids <em>(Space delimitted list of owner UUID)</em></li>
+                    <li><em>More Info: <a href="https://clubhouse.io/api/v1/#create-story" target="_blank">list of available fields</a></em></li>
                 </ul>
               </li>
             </ul>
