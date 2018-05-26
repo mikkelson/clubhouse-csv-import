@@ -45,7 +45,10 @@ if (!empty($_FILES['csv']['name']) && substr($_FILES['csv']['name'], -4) == '.cs
             addIfNotEmpty('milestone_id', $line, $payload);
             addIfNotEmpty('description', $line, $payload);
             addIfNotEmpty('estimate', $line, $payload);
+            addIfNotEmpty('epic_id', $line, $payload);
+            addIfNotEmpty('external_id', $line, $payload);
             addIfNotEmptyAsArray('owner_ids', $line, ' ', $payload);
+            addIfNotEmptyAsHash('labels', $line, ',', 'name', $payload);
 
             $data = json_encode($payload);
 
@@ -84,6 +87,24 @@ function addIfNotEmpty($key, $src, &$dest) {
   */
 function addIfNotEmptyAsArray($key, $src, $delim, &$dest) {
     if (isNotEmptyString($src[$key])) $dest[$key] = explode($delim, $src[$key]);
+}
+
+/**
+ *
+ * If $src['key'] value is not empty, explode to array (w/ $delim as delimeter),
+ * and add a $key with a hash (associative array) of the values  as its value to
+ * $dest, using $secondkey as the internal key
+ *
+ */
+function addIfNotEmptyAsHash($key, $src, $delim, $secondkey, &$dest) {
+    if (isNotEmptyString($src[$key])) {
+        $hash = array();
+        $values = explode($delim, $src[$key]);
+        foreach ($values as $item) {
+            $hash[] = array($secondkey => $item);
+        }
+        $dest[$key] = $hash;
+    }
 }
 
 function isNotEmptyString($str) {
