@@ -35,7 +35,7 @@ if (!empty($_FILES['csv']['name']) && substr($_FILES['csv']['name'], -4) == '.cs
                 continue;
             }
 
-	    // Required columns
+	        // Required columns
             $payload = array("project_id" => $line['project_id'],
                               "name" => $line['name'],
                               "story_type" => $line['story_type']
@@ -51,7 +51,6 @@ if (!empty($_FILES['csv']['name']) && substr($_FILES['csv']['name'], -4) == '.cs
             addIfNotEmptyAsHash('labels', $line, ',', 'name', $payload);
 
             $data = json_encode($payload);
-
 
             //make Clubhouse POST request
             $result = postClubhouse($_POST['token'], $data);
@@ -136,7 +135,7 @@ function unpackCsv($csv) {
 
 function postClubhouse($token, $data) {
 
-    $story_url = 'https://api.clubhouse.io/api/v1/stories?token=' . $token;
+    $story_url = 'https://api.clubhouse.io/api/v3/stories?token=' . $token;
 
     $ch = curl_init($story_url);
     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
