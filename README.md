@@ -8,10 +8,6 @@ There is no framework or package manager, just a few lines of PHP and a pleasant
 
 ![Clubhouse CSV Import Tool](https://raw.githubusercontent.com/mikkelson/clubhouse-csv-import/master/images/preview.PNG)
 
-* external_id
-* epic_id (must map to an existing Epic ID)
-* labels (comma-separated list of the labels to attach)
-
 ## Supported Fields
 
 ### Required Fields
@@ -23,7 +19,7 @@ There is no framework or package manager, just a few lines of PHP and a pleasant
 ### Optional Fields
 * epic_id (must be a pre-existing Epic)
 * external_id
-* labels
+* labels (comma-separated list of the labels to attach)
 * external_links
 * workflow_state _id
 * milestone_id
