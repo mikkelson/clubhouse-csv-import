@@ -18,7 +18,7 @@
     <div class="row">
       <div class="one-half column" style="margin-top: 25%">
         <h4>Clubhouse CSV Import</h4>
-        <p>This is an unofficial tool that allows you to import stories into Clubhouse.io from a CSV file using the <a href="https://clubhouse.io/api/v1" target="_blank">Clubhouse API</a>.</p>
+        <p>This is an unofficial tool that allows you to import stories into Clubhouse.io from a CSV file using the <a href="https://clubhouse.io/api/v3" target="_blank">Clubhouse API V3</a>.</p>
         <p>You are free to <a href="https://github.com/mikkelson/clubhouse-csv-import" target="_blank">download the source code</a> for this tool.</p>
       </div>
     </div>
@@ -78,17 +78,22 @@
               <li>
                 Optional Fields
                 <ul>
+                	<li>epic_id</li>
+                	<li>external_id</li>
+                	<li>labels</li>
+                	<li>external_links</li>
+                	<li>workflow_state_id</li>
                     <li>milestone_id</li>
                     <li>description</li>
                     <li>estimate</li>
                     <li>owner_ids <em>(Space delimitted list of owner UUID)</em></li>
-                    <li><em>More Info: <a href="https://clubhouse.io/api/v1/#create-story" target="_blank">list of available fields</a></em></li>
+                    <li><em>See a complete <a href="https://clubhouse.io/api/rest/v3/#Stories" target="_blank">list of available fields</a>.</em></li>
                 </ul>
               </li>
             </ul>
          </div>
     </div>
-    
+
     <div class="row">
       <div class="one-half column" style="margin-top: 5%">
         <p>Feedback and bug reports welcome <a href="https://twitter.com/happyrailfail" target="_blank">@happyrailfail</a>.</p>
