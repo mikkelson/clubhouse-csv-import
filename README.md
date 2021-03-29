@@ -35,3 +35,9 @@ See a complete <a href="https://clubhouse.io/api/rest/v3/#Stories" target="_blan
 Clone this repository to a location available by your webserver and load index.php in the browser. 
 
 If you do not want to install the app, a hosted version is available: [Clubhouse CSV Importer](http://jamesmikkelson.com/clubhouse)
+
+# Usage via Docker
+1. Install Docker on your machine
+1. Clone this repository to any location on your system
+2. run `docker-compose up -d` in the repository folder
+3. Visit `localhost:8080`, the importer is available there
