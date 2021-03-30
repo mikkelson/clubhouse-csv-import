@@ -8,6 +8,8 @@ There is no framework or package manager, just a few lines of PHP and a pleasant
 
 ![Clubhouse CSV Import Tool](https://raw.githubusercontent.com/mikkelson/clubhouse-csv-import/master/images/preview.PNG)
 
+If you do not want to install the app, a hosted version is available: [Clubhouse CSV Importer](http://jamesmikkelson.com/clubhouse)
+
 ## Supported Fields
 
 ### Required Fields
@@ -28,7 +30,6 @@ There is no framework or package manager, just a few lines of PHP and a pleasant
 * owner_ids (Space delimited list of owner UUID)
 
 See a complete <a href="https://clubhouse.io/api/rest/v3/#Stories" target="_blank">list of available fields</a>.
-
  
 # Installation using an existing server
 
