@@ -53,7 +53,12 @@ if (!empty($_FILES['csv']['name']) && substr($_FILES['csv']['name'], -4) == '.cs
             addIfNotEmptyAsArray('external_links', $line, ' |;|,|\n', $payload);
             addIfNotEmpty('external_id', $line, $payload);
             addIfNotEmpty('workflow_state_id', $line, $payload);
+            addIfNotEmptyAsTasks('tasks', $line, $payload);
 
+            if (isset($payload['owner_ids']) && isset($payload['tasks'])) {
+                foreach ($payload['tasks'] as &$task)
+                    $task['owner_ids'] = $payload['owner_ids'];
+            }
             $data = json_encode($payload);
 
             //make Clubhouse POST request
@@ -113,7 +118,31 @@ function addIfNotEmptyAsHash($key, $src, $delim, $secondkey, &$dest)
     }
 }
 
-function isNotEmptyString($str) {
+function addIfNotEmptyAsTasks($key, $src, &$dest)
+{
+    if (isNotEmptyString($src[$key])) {
+        // Export starts with "[ ] " or "[X] ", delimited by ";[ ] " or ";[X] "
+        // Other options:
+        //    Start/delmited with "*" or "-" maybe surrounded by spaces/line breaks
+        //    Delimited by numbers, maybe surrounded by spaces/line breaks
+        //    Delimited by ";" maybe surrounded by spaces/line breaks
+        if (preg_match('/^\[[ X]\]/', $src[$key])) {
+            $task_list_string = preg_replace('/^\[[ X]\] */', '', $src[$key]);
+            $task_list = preg_split('/;\[[ X]\] */', $task_list_string);
+        } else if (preg_match('/^ *[*-]]/', $src[$key])) {
+            $task_list_string = preg_replace('/^ *[*-] */', '', $src[$key]);
+            $task_list = preg_split('/[,;\n ]*[*-] */', $task_list_string);
+        } else if (preg_match('/^\d+[\. :-]]/', $src[$key])) {
+            $task_list_string = preg_replace('/^\d+[\.:-] */', '', $src[$key]);
+            $task_list = preg_split('/[,;\n ]*\d+[\.:-] */', $task_list_string);
+        } else {
+            $task_list = preg_split('/;[\n ]*/', $src[$key]);
+        }
+        if (count($task_list) > 0) $dest[$key] = array_map(fn($task) => array('description' => $task), $task_list);
+    }
+}
+
+function isNotEmptyString($str){
     return (isset($str) && (strlen(trim($str)) > 0));
 }
 
