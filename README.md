@@ -23,11 +23,17 @@ If you do not want to install the app, a hosted version is available: [Clubhouse
 * external_id
 * labels (comma-separated list of the labels to attach)
 * external_links
-* workflow_state _id
-* milestone_id
+* workflow_state_id (number); OR state (name of state in Clubhouse)
 * description
 * estimate
-* owner_ids (Space delimited list of owner UUID)
+* owner_ids (Space delimited list of owner UUID); OR owners (list of owner email addresses)
+* requested_by_id (UUID of user); OR requester (user email address)
+* tasks - any of the following formats should work (with or without line breaks between tasks):
+    * \[&zwnj;&nbsp;&zwnj;\] Task description 1;\[&zwnj;&nbsp;&zwnj;\] Task description 2
+    *  1&zwnj;. Task description; 2. Task description
+    * \* Task description 1 * Task description 2
+    * \- Task description 1 - Task description 2
+    * Task description 1; Task description 2
 
 See a complete <a href="https://clubhouse.io/api/rest/v3/#Stories" target="_blank">list of available fields</a>.
  
