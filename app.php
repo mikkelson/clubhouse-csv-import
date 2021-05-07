@@ -47,6 +47,7 @@ if (!empty($_FILES['csv']['name']) && substr($_FILES['csv']['name'], -4) == '.cs
             addIfNotEmpty('estimate', $line, $payload);
             addIfNotEmpty('epic_id', $line, $payload);
             addIfNotEmpty('external_id', $line, $payload);
+            addIfNotEmpty('requested_by_id', $line, $payload);
             addIfNotEmptyAsArray('owner_ids', $line, ' |;|,|\n', $payload);
             addIfNotEmptyAsHash('labels', $line, ';|,|\n', 'name', $payload);
             addIfNotEmptyAsArray('external_links', $line, ' |;|,|\n', $payload);
