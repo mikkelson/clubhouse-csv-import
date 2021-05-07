@@ -138,7 +138,7 @@ function unpackCsv($csv) {
 
 function postClubhouse($token, $data) {
 
-    $story_url = 'https://api.clubhouse.io/api/v3/stories?token=' . $token;
+    $story_url = 'https://api.clubhouse.io/api/v3/stories';
 
     $ch = curl_init($story_url);
     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
@@ -147,9 +147,10 @@ function postClubhouse($token, $data) {
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
     curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
     curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-        'Accept: application/json',
-        'Content-Type: application/json',
-        'Content-Length: ' . strlen($data))
+            'Accept: application/json',
+            'Content-Type: application/json',
+            'Clubhouse-Token: ' . $token,
+            'Content-Length: ' . strlen($data))
     );
 
     $result = curl_exec($ch);
