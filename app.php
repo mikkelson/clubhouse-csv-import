@@ -11,6 +11,7 @@ if (!empty($_FILES['csv']['name']) && substr($_FILES['csv']['name'], -4) == '.cs
         $skipped = 0;
         $count = 0;
         $failed = 0;
+        $members = array();
 
         $csv_lines = unpackCsv($_FILES['csv']['tmp_name']);
 
@@ -18,6 +19,15 @@ if (!empty($_FILES['csv']['name']) && substr($_FILES['csv']['name'], -4) == '.cs
         $total = count($csv_lines);
         $apiLimit = 200;
         $apiCount = 0;
+
+        // If user columns, get member list to translate to UUID's
+        if (isset($csv_lines[0]) && array_key_exists('owners', $csv_lines[0])) {
+            $return = reqClubhouse('members', $_POST['token'], null);
+            foreach ($return as $member) {
+                $members[$member->profile->email_address] = $member->id;
+            }
+        }
+
         foreach ($csv_lines as $line) {
             $count++;
             $apiCount++;
@@ -54,6 +64,8 @@ if (!empty($_FILES['csv']['name']) && substr($_FILES['csv']['name'], -4) == '.cs
             addIfNotEmpty('external_id', $line, $payload);
             addIfNotEmpty('workflow_state_id', $line, $payload);
             addIfNotEmptyAsTasks('tasks', $line, $payload);
+            addIfNotEmptyAsMemberArray('owners', 'owner_ids', $line, $members, $payload);
+            addIfNotEmptyAsMember('requester', 'requested_by_id', $line, $members, $payload);
 
             if (isset($payload['owner_ids']) && isset($payload['tasks'])) {
                 foreach ($payload['tasks'] as &$task)
@@ -62,9 +74,9 @@ if (!empty($_FILES['csv']['name']) && substr($_FILES['csv']['name'], -4) == '.cs
             $data = json_encode($payload);
 
             //make Clubhouse POST request
-            $result = postClubhouse($_POST['token'], $data);
+            $result = reqClubhouse('stories', $_POST['token'], $data);
             if (!empty($result->created_at)) {
-                @$counts[$line['story_type']] ++;
+                @$counts[$line['story_type']]++;
             } elseif (!empty($result->message)) {
                 $error_lines[] = "Line " . $count . ": <em>" . $line['name'] . "</em> failed: " . $result->message . "";
                 $failed++;
@@ -97,6 +109,22 @@ function addIfNotEmptyAsArray($key, $src, $delim, &$dest)
 {
     if (isNotEmptyString($src[$key]))
         $dest[$key] = preg_split('/ *(' . $delim . ') */', $src[$key]);
+}
+
+function addIfNotEmptyAsMemberArray($key_from, $key_to, $src, $members, &$dest)
+{
+    if (isNotEmptyString($src[$key_from]) && !isNotEmptyString($src[$key_to])) {
+        $member_split = preg_split('/[,; ] */', $src[$key_from]);
+        for ($i = 0; $i < count($member_split); $i++)
+            $member_split[$i] = $members[$member_split[$i]];
+        $dest[$key_to] = array_filter($member_split);
+    }
+}
+
+function addIfNotEmptyAsMember($key_from, $key_to, $src, $members, &$dest)
+{
+    if (isNotEmptyString($src[$key_from]) && !isNotEmptyString($src[$key_to]))
+        $dest[$key_to] = $members[$src[$key_from]];
 }
 
 /**
@@ -158,7 +186,7 @@ function unpackCsv($csv) {
                     //first row, map columns to Clubhouse API fields
                     $api_field_mapping[] = $data[$c];
                 } else {
-                    @$csv_lines[$row][$api_field_mapping[$c]] = $data[$c];
+                    @$csv_lines[$row - 2][$api_field_mapping[$c]] = $data[$c];
                 }
             }
 
@@ -169,13 +197,17 @@ function unpackCsv($csv) {
     return $csv_lines;
 }
 
-function postClubhouse($token, $data) {
+function reqClubhouse($service, $token, $data)
+{
+    $endpoint_url = 'https://api.clubhouse.io/api/v3/' . $service;
 
-    $story_url = 'https://api.clubhouse.io/api/v3/stories';
-
-    $ch = curl_init($story_url);
-    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+    $ch = curl_init($endpoint_url);
+    if ($data) {
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+    } else {
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
+    }
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
     curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
