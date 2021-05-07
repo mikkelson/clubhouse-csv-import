@@ -42,7 +42,7 @@ if (!empty($_FILES['csv']['name']) && substr($_FILES['csv']['name'], -4) == '.cs
             );
             
             // Optional columns
-            addIfNotEmpty('milestone_id', $line, $payload);
+//            addIfNotEmpty('milestone_id', $line, $payload);
             addIfNotEmpty('description', $line, $payload);
             addIfNotEmpty('estimate', $line, $payload);
             addIfNotEmpty('epic_id', $line, $payload);
