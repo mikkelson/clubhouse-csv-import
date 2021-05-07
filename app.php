@@ -12,6 +12,7 @@ if (!empty($_FILES['csv']['name']) && substr($_FILES['csv']['name'], -4) == '.cs
         $count = 0;
         $failed = 0;
         $members = array();
+        $workflow_states = array();
 
         $csv_lines = unpackCsv($_FILES['csv']['tmp_name']);
 
@@ -25,6 +26,18 @@ if (!empty($_FILES['csv']['name']) && substr($_FILES['csv']['name'], -4) == '.cs
             $return = reqClubhouse('members', $_POST['token'], null);
             foreach ($return as $member) {
                 $members[$member->profile->email_address] = $member->id;
+            }
+        }
+
+        // If workflow state column, get list of workflow states to translate to ID's
+        if (isset($csv_lines[0]) && array_key_exists('state', $csv_lines[0])) {
+            $return = reqClubhouse('workflows', $_POST['token'], null);
+            foreach ($return as $workflow) {
+                foreach ($workflow->project_ids as $project_id) {
+                    foreach ($workflow->states as $state) {
+                        $workflow_states[$project_id][$state->name] = $state->id;
+                    }
+                }
             }
         }
 
@@ -66,6 +79,7 @@ if (!empty($_FILES['csv']['name']) && substr($_FILES['csv']['name'], -4) == '.cs
             addIfNotEmptyAsTasks('tasks', $line, $payload);
             addIfNotEmptyAsMemberArray('owners', 'owner_ids', $line, $members, $payload);
             addIfNotEmptyAsMember('requester', 'requested_by_id', $line, $members, $payload);
+            addIfNotEmptyAsWorkflowState('state', 'workflow_state_id', $line, $workflow_states, $payload);
 
             if (isset($payload['owner_ids']) && isset($payload['tasks'])) {
                 foreach ($payload['tasks'] as &$task)
@@ -168,6 +182,12 @@ function addIfNotEmptyAsTasks($key, $src, &$dest)
         }
         if (count($task_list) > 0) $dest[$key] = array_map(fn($task) => array('description' => $task), $task_list);
     }
+}
+
+function addIfNotEmptyAsWorkflowState($key_from, $key_to, $src, $workflow_states, &$dest)
+{
+    if (isNotEmptyString($src[$key_from]) && !isNotEmptyString($src[$key_to]))
+        $dest[$key_to] = $workflow_states[$src['project_id']][$src[$key_from]];
 }
 
 function isNotEmptyString($str){
