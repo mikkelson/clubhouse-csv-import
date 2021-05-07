@@ -47,9 +47,9 @@ if (!empty($_FILES['csv']['name']) && substr($_FILES['csv']['name'], -4) == '.cs
             addIfNotEmpty('estimate', $line, $payload);
             addIfNotEmpty('epic_id', $line, $payload);
             addIfNotEmpty('external_id', $line, $payload);
-            addIfNotEmptyAsArray('owner_ids', $line, ' ', $payload);
-            addIfNotEmptyAsHash('labels', $line, ',', 'name', $payload);
-            addIfNotEmptyAsArray('external_links', $line, ' ', $payload);
+            addIfNotEmptyAsArray('owner_ids', $line, ' |;|,|\n', $payload);
+            addIfNotEmptyAsHash('labels', $line, ';|,|\n', 'name', $payload);
+            addIfNotEmptyAsArray('external_links', $line, ' |;|,|\n', $payload);
             addIfNotEmpty('external_id', $line, $payload);
             addIfNotEmpty('workflow_state_id', $line, $payload);
 
@@ -87,8 +87,10 @@ function addIfNotEmpty($key, $src, &$dest) {
   * and add a $key with the array as its value to $dest.
   *
   */
-function addIfNotEmptyAsArray($key, $src, $delim, &$dest) {
-    if (isNotEmptyString($src[$key])) $dest[$key] = explode($delim, $src[$key]);
+function addIfNotEmptyAsArray($key, $src, $delim, &$dest)
+{
+    if (isNotEmptyString($src[$key]))
+        $dest[$key] = preg_split('/ *(' . $delim . ') */', $src[$key]);
 }
 
 /**
@@ -98,10 +100,11 @@ function addIfNotEmptyAsArray($key, $src, $delim, &$dest) {
  * $dest, using $secondkey as the internal key
  *
  */
-function addIfNotEmptyAsHash($key, $src, $delim, $secondkey, &$dest) {
+function addIfNotEmptyAsHash($key, $src, $delim, $secondkey, &$dest)
+{
     if (isNotEmptyString($src[$key])) {
         $hash = array();
-        $values = explode($delim, $src[$key]);
+        $values = preg_split('/ *(' . $delim . ') */', $src[$key]);
         foreach ($values as $item) {
             $hash[] = array($secondkey => $item);
         }
