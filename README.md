@@ -14,7 +14,7 @@ If you do not want to install the app, a hosted version is available: [Clubhouse
 
 ### Required Fields
 
-* project_id
+* workflow_state_id
 * name (The title of this story)
 * story_type (options: feature, chore, bug)
 

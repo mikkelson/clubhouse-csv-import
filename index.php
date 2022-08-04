@@ -70,7 +70,7 @@
               <li>
                 Required Fields
                 <ul>
-                  <li>project_id</li>
+                  <li>workflow_state_id</li>
                   <li>name <em>(The title of this story)</em></li>
                   <li>story_type <em>(options: feature, chore, bug)</em></li>
                 </ul>
