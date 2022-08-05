@@ -14,7 +14,7 @@ if (!empty($_FILES['csv']['name']) && substr($_FILES['csv']['name'], -4) == '.cs
 
         $csv_lines = unpackCsv($_FILES['csv']['tmp_name']);
 
-        //loop through csv lines and add to clubhouse as stories
+        //loop through csv lines and add to shortcut as stories
         $total = count($csv_lines);
         $apiLimit = 200;
         $apiCount = 0;
@@ -22,21 +22,21 @@ if (!empty($_FILES['csv']['name']) && substr($_FILES['csv']['name'], -4) == '.cs
             $count++;
             $apiCount++;
             if ($apiCount == $apiLimit) {
-                //sleep for a 60 seconds, avoid Clubhouse API limit
+                //sleep for a 60 seconds, avoid Shortcut API limit
                 sleep(60);
                 $apiCount = 0;
             }
 
-            //project_id, name and story_type are required by the Clubhouse API
-            if (empty($line['project_id']) || empty($line['name']) || empty($line['story_type'])) {
-                $error_lines[] = "Line " . $count . " is missing required field <i>project_id</i>, <i>name</i> or <i>story_type</i>";
+            //workflow_state_id, name and story_type are required by the Shortcut API
+            if (empty($line['workflow_state_id']) || empty($line['name']) || empty($line['story_type'])) {
+                $error_lines[] = "Line " . $count . " is missing required field <i>workflow_state_id</i>, <i>name</i> or <i>story_type</i>";
                 $skipped++;
                 $failed++;
                 continue;
             }
 
 	        // Required columns
-            $payload = array("project_id" => $line['project_id'],
+            $payload = array("workflow_state_id" => $line['workflow_state_id'],
                               "name" => $line['name'],
                               "story_type" => $line['story_type']
             );
@@ -55,8 +55,8 @@ if (!empty($_FILES['csv']['name']) && substr($_FILES['csv']['name'], -4) == '.cs
 
             $data = json_encode($payload);
 
-            //make Clubhouse POST request
-            $result = postClubhouse($_POST['token'], $data);
+            //make Shortcut POST request
+            $result = postShortcut($_POST['token'], $data);
             if (!empty($result->created_at)) {
                 @$counts[$line['story_type']] ++;
             } elseif (!empty($result->message)) {
@@ -122,7 +122,7 @@ function unpackCsv($csv) {
             $num = count($data);
             for ($c = 0; $c < $num; $c++) {
                 if ($row == 1) {
-                    //first row, map columns to Clubhouse API fields
+                    //first row, map columns to Shortcut API fields
                     $api_field_mapping[] = $data[$c];
                 } else {
                     @$csv_lines[$row][$api_field_mapping[$c]] = $data[$c];
@@ -136,9 +136,9 @@ function unpackCsv($csv) {
     return $csv_lines;
 }
 
-function postClubhouse($token, $data) {
+function postShortcut($token, $data) {
 
-    $story_url = 'https://api.clubhouse.io/api/v3/stories?token=' . $token;
+    $story_url = 'https://api.app.shortcut.com/api/v3/stories?token=' . $token;
 
     $ch = curl_init($story_url);
     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");

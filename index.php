@@ -3,8 +3,8 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Clubhouse CSV Import</title>
-  <meta name="description" content="Import stories, epics and bugs to Clubhouse using a CSV file">
+  <title>Shortcut CSV Import</title>
+  <meta name="description" content="Import stories, epics and bugs to Shortcut using a CSV file">
   <meta name="author" content="James Mikkelson">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
@@ -17,15 +17,15 @@
   <div class="container">
     <div class="row">
       <div class="one-half column" style="margin-top: 25%">
-        <h4>Clubhouse CSV Import</h4>
-        <p>This is an unofficial tool that allows you to import stories into Clubhouse.io from a CSV file using the <a href="https://clubhouse.io/api/v3" target="_blank">Clubhouse API V3</a>.</p>
+        <h4>Shortcut CSV Import</h4>
+        <p>This is an unofficial tool that allows you to import stories into Shortcut.com from a CSV file using the <a href="https://shortcut.com/api/rest/v3" target="_blank">Shortcut API V3</a>.</p>
         <p>You are free to <a href="https://github.com/mikkelson/clubhouse-csv-import" target="_blank">download the source code</a> for this tool.</p>
       </div>
     </div>
     
     <div class="row">
      <form action="index.php#resultContent" method="post" enctype="multipart/form-data">
-      <input type='text' name='token' placeholder='Clubhouse API Token' required="required" value="<?=@$_POST['token'];?>"/>
+      <input type='text' name='token' placeholder='Shortcut API Token' required="required" value="<?=@$_POST['token'];?>"/>
        <br />
        <input type="file" name="csv" size="25" />
        <input type='submit' class='button-primary' value='Import CSV' />
@@ -70,7 +70,7 @@
               <li>
                 Required Fields
                 <ul>
-                  <li>project_id</li>
+                  <li>workflow_state_id</li>
                   <li>name <em>(The title of this story)</em></li>
                   <li>story_type <em>(options: feature, chore, bug)</em></li>
                 </ul>
@@ -87,7 +87,7 @@
                     <li>description</li>
                     <li>estimate</li>
                     <li>owner_ids <em>(Space delimitted list of owner UUID)</em></li>
-                    <li><em>See a complete <a href="https://clubhouse.io/api/rest/v3/#Stories" target="_blank">list of available fields</a>.</em></li>
+                    <li><em>See a complete <a href="https://shortcut.com/api/rest/v3#Stories" target="_blank">list of available fields</a>.</em></li>
                 </ul>
               </li>
             </ul>
